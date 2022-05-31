@@ -4,7 +4,7 @@ COLOR 1F
 SET GITORG=ACMBDA
 SET GITPRJ=WSL-Desktop
 SET BRANCH=main
-SET BASE=https://github.com/%GITORG%/%GITPRJ%/raw/%BRANCH%
+SET BASE=https://raw.githubusercontent.com/%GITORG%/%GITPRJ%/%BRANCH%/
 
 REM ## Enable WSL if required
 POWERSHELL -Command "$WSL = Get-WindowsOptionalFeature -Online -FeatureName 'Microsoft-Windows-Subsystem-Linux' ; if ($WSL.State -eq 'Disabled') {Enable-WindowsOptionalFeature -FeatureName $WSL.FeatureName -Online}"
@@ -15,11 +15,10 @@ FOR /f "delims=" %%a in ('powershell -ExecutionPolicy bypass -command "%TEMP%\wi
 :DI
 CLS && SET RUNSTART=%date% @ %time:~0,5%
 IF EXIST .\CMD.EXE CD ..\..
-
-ECHO [xWSL Installer 20220208]
+ECHO [Aeolus Linux Installer 202205031]
 ECHO:
-ECHO Enter a unique name for your xWSL distro or hit Enter to use default. 
-SET DISTRO=xWSL& SET /p DISTRO=Keep this name simple, no space or underscore characters [xWSL]: 
+ECHO Enter a unique name for your distro or hit Enter to use default. 
+SET DISTRO=AeolusLinux& SET /p DISTRO=Keep this name simple, no space or underscore characters [AeolusLinux]: 
 IF EXIST "%DISTRO%" (ECHO. & ECHO Folder exists with that name, choose a new folder name. & PAUSE & GOTO DI)
 WSL.EXE -d %DISTRO% -e . > "%TEMP%\InstCheck.tmp"
 FOR /f %%i in ("%TEMP%\InstCheck.tmp") do set CHKIN=%%~zi 
@@ -82,17 +81,17 @@ ECHO [%TIME:~0,8%] Remove un-needed packages (~1m00s)
 %GO% "DEBIAN_FRONTEND=noninteractive apt-get -y purge apparmor apport bolt cloud-init cloud-initramfs-copymods cloud-initramfs-dyn-netconf cryptsetup cryptsetup-initramfs dmeventd finalrd fwupd initramfs-tools initramfs-tools-core irqbalance isc-dhcp-client klibc-utils kpartx libaio1 libarchive13 libdevmapper-event1.02.1 libdns-export1109 libefiboot1 libefivar1 libestr0 libfastjson4 libfwupd2 libfwupdplugin1 libgcab-1.0-0 libgpgme11 libgudev-1.0-0 libgusb2 libisc-export1105 libisns0 libjson-glib-1.0-0 libjson-glib-1.0-common libklibc liblvm2cmd2.03 libmspack0 libnuma1 libsgutils2-2 libsmbios-c2 libtss2-esys0 liburcu6 libxmlb1 libxmlsec1 libxmlsec1-openssl libxslt1.1 linux-base lvm2 lz4 mdadm multipath-tools open-iscsi open-vm-tools overlayroot plymouth plymouth-theme-ubuntu-text popularity-contest sbsigntool secureboot-db sg3-utils sg3-utils-udev snapd squashfs-tools thin-provisioning-tools tpm-udev zerofree ; apt-get -y autoremove --purge"  > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% Remove un-needed packages.log" 2>&1
 
 ECHO [%TIME:~0,8%] Configure apt-fast Downloader (~0m15s)
-%GO% "DEBIAN_FRONTEND=noninteractive apt-get -y install /tmp/xWSL/deb/aria2_1.35.0-1build1_amd64.deb /tmp/xWSL/deb/libaria2-0_1.35.0-1build1_amd64.deb /tmp/xWSL/deb/libssh2-1_1.8.0-2.1build1_amd64.deb /tmp/xWSL/deb/libc-ares2_1.15.0-1build1_amd64.deb --no-install-recommends" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% Configure apt-fast Downloader.log" 2>&1
-%GO% "chmod +x /tmp/xWSL/dist/usr/local/bin/apt-fast ; cp -p /tmp/xWSL/dist/usr/local/bin/apt-fast /usr/local/bin" > NUL
+%GO% "DEBIAN_FRONTEND=noninteractive apt-get -y install /tmp/%GITPRJ%/deb/aria2_1.35.0-1build1_amd64.deb /tmp/%GITPRJ%/deb/libaria2-0_1.35.0-1build1_amd64.deb /tmp/%GITPRJ%/deb/libssh2-1_1.8.0-2.1build1_amd64.deb /tmp/%GITPRJ%/deb/libc-ares2_1.15.0-1build1_amd64.deb --no-install-recommends" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% Configure apt-fast Downloader.log" 2>&1
+%GO% "chmod +x /tmp/%GITPRJ%/dist/usr/local/bin/apt-fast ; cp -p /tmp/%GITPRJ%/dist/usr/local/bin/apt-fast /usr/local/bin" > NUL
 
 ECHO [%TIME:~0,8%] Remote Desktop Components (~4m45s)
-%GO% "DEBIAN_FRONTEND=noninteractive apt-fast -y install /tmp/xWSL/deb/gksu_2.1.0_amd64.deb /tmp/xWSL/deb/libgksu2-0_2.1.0_amd64.deb /tmp/xWSL/deb/libgnome-keyring0_3.12.0-1+b2_amd64.deb /tmp/xWSL/deb/libgnome-keyring-common_3.12.0-1_all.deb /tmp/xWSL/deb/multiarch-support_2.27-3ubuntu1_amd64.deb /tmp/xWSL/deb/xrdp_0.9.17-2ubuntu1_amd64.deb /tmp/xWSL/deb/xorgxrdp_0.2.17-1ubuntu1_amd64.deb /tmp/xWSL/deb/plata-theme_0.9.9-0ubuntu1~focal1_all.deb /tmp/xWSL/deb/papirus-icon-theme_20210201-1_all.deb /tmp/xWSL/deb/fonts-cascadia-code_2005.15-1_all.deb /tmp/xWSL/deb/libfdk-aac1_0.1.6-1_amd64.deb x11-apps x11-session-utils x11-xserver-utils dialog distro-info-data dumb-init inetutils-syslogd xdg-utils avahi-daemon libnss-mdns binutils putty unzip zip unar unzip dbus-x11 samba-common-bin base-files ubuntu-release-upgrader-core python3-distupgrade packagekit packagekit-tools lhasa arj unace liblhasa0 apt-config-icons apt-config-icons-hidpi apt-config-icons-large apt-config-icons-large-hidpi libgtkd-3-0 libphobos2-ldc-shared90 libvte-2.91-0 libvte-2.91-common libvted-3-0 tilix tilix-common libdbus-glib-1-2 xvfb xbase-clients python3-psutil --no-install-recommends" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% Remote Desktop Components.log" 2>&1
+%GO% "DEBIAN_FRONTEND=noninteractive apt-fast -y install /tmp/%GITPRJ%/deb/gksu_2.1.0_amd64.deb /tmp/%GITPRJ%/deb/libgksu2-0_2.1.0_amd64.deb /tmp/%GITPRJ%/deb/libgnome-keyring0_3.12.0-1+b2_amd64.deb /tmp/%GITPRJ%/deb/libgnome-keyring-common_3.12.0-1_all.deb /tmp/%GITPRJ%/deb/multiarch-support_2.27-3ubuntu1_amd64.deb /tmp/%GITPRJ%/deb/xrdp_0.9.17-2ubuntu1_amd64.deb /tmp/%GITPRJ%/deb/xorgxrdp_0.2.17-1ubuntu1_amd64.deb /tmp/%GITPRJ%/deb/plata-theme_0.9.9-0ubuntu1~focal1_all.deb /tmp/%GITPRJ%/deb/papirus-icon-theme_20210201-1_all.deb /tmp/%GITPRJ%/deb/fonts-cascadia-code_2005.15-1_all.deb /tmp/%GITPRJ%/deb/libfdk-aac1_0.1.6-1_amd64.deb x11-apps x11-session-utils x11-xserver-utils dialog distro-info-data dumb-init inetutils-syslogd xdg-utils avahi-daemon libnss-mdns binutils putty unzip zip unar unzip dbus-x11 samba-common-bin base-files ubuntu-release-upgrader-core python3-distupgrade packagekit packagekit-tools lhasa arj unace liblhasa0 apt-config-icons apt-config-icons-hidpi apt-config-icons-large apt-config-icons-large-hidpi libgtkd-3-0 libphobos2-ldc-shared90 libvte-2.91-0 libvte-2.91-common libvted-3-0 tilix tilix-common libdbus-glib-1-2 xvfb xbase-clients python3-psutil --no-install-recommends" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% Remote Desktop Components.log" 2>&1
 
 ECHO [%TIME:~0,8%] XFCE 4.16 (~2m00s)
 %GO% "DEBIAN_FRONTEND=noninteractive apt-fast -y install xfce4 xfce4-appfinder xfce4-notifyd xfce4-terminal xfce4-whiskermenu-plugin libxfce4ui-utils libwebrtc-audio-processing1 pulseaudio xfce4-pulseaudio-plugin pavucontrol xfwm4 xfce4-panel xfce4-session xfce4-settings thunar thunar-volman thunar-archive-plugin xfdesktop4 xfce4-screenshooter libsmbclient gigolo gvfs-fuse gvfs-backends gvfs-bin mousepad evince xarchiver lhasa lrzip lzip lzop ncompress zip unzip dmz-cursor-theme adapta-gtk-theme gconf-defaults-service xfce4-taskmanager hardinfo synaptic compton compton-conf libconfig9 qt5-gtk2-platformtheme libtumbler-1-0 tumbler tumbler-common tumbler-plugins-extra --no-install-recommends" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% XFCE416.log" 2>&1
 
 ECHO [%TIME:~0,8%] Seamonkey and WebKit2GTK for WSL1 (~3m30s)
-%GO% "DEBIAN_FRONTEND=noninteractive apt-fast -y --allow-downgrades install seamonkey-mozilla-build epiphany-browser libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio /tmp/xWSL/webkit2gtk/*.deb ; apt-mark hold gir1.2-javascriptcoregtk-4.0 gir1.2-webkit2-4.0 libjavascriptcoregtk-4.0-18 libjavascriptcoregtk-4.0-bin libwebkit2gtk-4.0-37 webkit2gtk-driver ; update-alternatives --install /usr/bin/www-browser www-browser /usr/bin/seamonkey 100 ; update-alternatives --install /usr/bin/gnome-www-browser gnome-www-browser /usr/bin/seamonkey 100 ; update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/bin/seamonkey 100 ; cd /tmp/xWSL/deb ; wget -q https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb ; dpkg -i /tmp/xWSL/deb/chrome-remote-desktop_current_amd64.deb" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% Seamonkey and WebKit2GTK for WSL1.log" 2>&1
+%GO% "DEBIAN_FRONTEND=noninteractive apt-fast -y --allow-downgrades install seamonkey-mozilla-build epiphany-browser libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio /tmp/%GITPRJ%/webkit2gtk/*.deb ; apt-mark hold gir1.2-javascriptcoregtk-4.0 gir1.2-webkit2-4.0 libjavascriptcoregtk-4.0-18 libjavascriptcoregtk-4.0-bin libwebkit2gtk-4.0-37 webkit2gtk-driver ; update-alternatives --install /usr/bin/www-browser www-browser /usr/bin/seamonkey 100 ; update-alternatives --install /usr/bin/gnome-www-browser gnome-www-browser /usr/bin/seamonkey 100 ; update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/bin/seamonkey 100 ; cd /tmp/%GITPRJ%/deb ; wget -q https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb ; dpkg -i /tmp/%GITPRJ%/deb/chrome-remote-desktop_current_amd64.deb" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% Seamonkey and WebKit2GTK for WSL1.log" 2>&1
 
 REM ## Additional items to install can go here...
 REM ## %GO% "cd /tmp ; wget https://files.multimc.org/downloads/multimc_1.4-1.deb"
@@ -103,30 +102,30 @@ ECHO [%TIME:~0,8%] Post-install clean-up (~0m45s)
 
 SET /A SESMAN = %RDPPRT% - 50
 %GO% "which schtasks.exe" > "%TEMP%\SCHT.tmp" & set /p SCHT=<"%TEMP%\SCHT.tmp"
-%GO% "sed -i 's#SCHT#%SCHT%#g' /tmp/xWSL/dist/usr/local/bin/restartwsl ; sed -i 's#DISTRO#%DISTRO%#g' /tmp/xWSL/dist/usr/local/bin/restartwsl"
-IF %LINDPI% GEQ 288 ( %GO% "sed -i 's/HISCALE/3/g' /tmp/xWSL/dist/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml" )
-IF %LINDPI% GEQ 192 ( %GO% "sed -i 's/HISCALE/2/g' /tmp/xWSL/dist/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml" )
-IF %LINDPI% GEQ 192 ( %GO% "sed -i 's/Default-hdpi/Default-xhdpi/g' /tmp/xWSL/dist/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml" )
-IF %LINDPI% GEQ 192 ( %GO% "sed -i 's/16/32/g' /tmp/xWSL/dist/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml" )
-IF %LINDPI% GEQ 192 ( %GO% "sed -i 's/QQQ/96/g' /tmp/xWSL/dist/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml" )
-IF %LINDPI% LSS 192 ( %GO% "sed -i 's/QQQ/%LINDPI%/g' /tmp/xWSL/dist/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml" )
-IF %LINDPI% LSS 192 ( %GO% "sed -i 's/HISCALE/1/g' /tmp/xWSL/dist/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml" )
-IF %LINDPI% LSS 120 ( %GO% "sed -i 's/Default-hdpi/Default/g' /tmp/xWSL/dist/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml" )
+%GO% "sed -i 's#SCHT#%SCHT%#g' /tmp/%GITPRJ%/dist/usr/local/bin/restartwsl ; sed -i 's#DISTRO#%DISTRO%#g' /tmp/%GITPRJ%/dist/usr/local/bin/restartwsl"
+IF %LINDPI% GEQ 288 ( %GO% "sed -i 's/HISCALE/3/g' /tmp/%GITPRJ%/dist/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml" )
+IF %LINDPI% GEQ 192 ( %GO% "sed -i 's/HISCALE/2/g' /tmp/%GITPRJ%/dist/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml" )
+IF %LINDPI% GEQ 192 ( %GO% "sed -i 's/Default-hdpi/Default-xhdpi/g' /tmp/%GITPRJ%/dist/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml" )
+IF %LINDPI% GEQ 192 ( %GO% "sed -i 's/16/32/g' /tmp/%GITPRJ%/dist/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml" )
+IF %LINDPI% GEQ 192 ( %GO% "sed -i 's/QQQ/96/g' /tmp/%GITPRJ%/dist/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml" )
+IF %LINDPI% LSS 192 ( %GO% "sed -i 's/QQQ/%LINDPI%/g' /tmp/%GITPRJ%/dist/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml" )
+IF %LINDPI% LSS 192 ( %GO% "sed -i 's/HISCALE/1/g' /tmp/%GITPRJ%/dist/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml" )
+IF %LINDPI% LSS 120 ( %GO% "sed -i 's/Default-hdpi/Default/g' /tmp/%GITPRJ%/dist/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml" )
 
 %GO% "mkdir -p /dev/dri ; mknod -m 666 /dev/dri/card0 c 226 0 ; mknod -m 666 /dev/dri/renderD128 c 226 128 ; mknod -m 666 /dev/fb0 c 29 0"
 %GO% "sed -i 's/ListenPort=3350/ListenPort=%SESMAN%/g' /etc/xrdp/sesman.ini"
 %GO% "sed -i 's/thinclient_drives/.xWSL/g' /etc/xrdp/sesman.ini"
-%GO% "sed -i 's/port=3389/port=%RDPPRT%/g' /tmp/xWSL/dist/etc/xrdp/xrdp.ini ; sed -i 's/\\h/%DISTRO%/g' /tmp/xWSL/dist/etc/skel/.bashrc"
+%GO% "sed -i 's/port=3389/port=%RDPPRT%/g' /tmp/%GITPRJ%/dist/etc/xrdp/xrdp.ini ; sed -i 's/\\h/%DISTRO%/g' /tmp/%GITPRJ%/dist/etc/skel/.bashrc"
 %GO% "sed -i 's/#Port 22/Port %SSHPRT%/g' /etc/ssh/sshd_config"
 %GO% "sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config"
-%GO% "sed -i 's/WSLINSTANCENAME/%DISTRO%/g' /tmp/xWSL/dist/usr/local/bin/initwsl"
+%GO% "sed -i 's/WSLINSTANCENAME/%DISTRO%/g' /tmp/%GITPRJ%/dist/usr/local/bin/initwsl"
 %GO% "sed -i 's/#enable-dbus=yes/enable-dbus=no/g' /etc/avahi/avahi-daemon.conf ; sed -i 's/#host-name=foo/host-name=%COMPUTERNAME%-%DISTRO%/g' /etc/avahi/avahi-daemon.conf ; sed -i 's/use-ipv4=yes/use-ipv4=no/g' /etc/avahi/avahi-daemon.conf"
 %GO% "cp /mnt/c/Windows/Fonts/*.ttf /usr/share/fonts/truetype ; ssh-keygen -A ; adduser xrdp ssl-cert" > NUL
-%GO% "chmod 644 /tmp/xWSL/dist/etc/wsl.conf ; chmod 644 /tmp/xWSL/dist/var/lib/xrdp-pulseaudio-installer/*.so"
-%GO% "chmod 755 /tmp/xWSL/dist/etc/profile.d/xWSL.sh ; chmod 755 /tmp/xWSL/dist/usr/local/bin/restartwsl ; chmod 755 /tmp/xWSL/dist/usr/local/bin/initwsl ; chmod -R 700 /tmp/xWSL/dist/etc/skel/.config ; chmod -R 7700 /tmp/xWSL/dist/etc/skel/.local ; chmod 700 /tmp/xWSL/dist/etc/skel/.mozilla ; chmod +x /tmp/xWSL/dist/etc/skel/Desktop/Epiphany.desktop ; chmod +x /tmp/xWSL/dist/etc/skel/Desktop/Seamonkey.desktop"
+%GO% "chmod 644 /tmp/%GITPRJ%/dist/etc/wsl.conf ; chmod 644 /tmp/%GITPRJ%/dist/var/lib/xrdp-pulseaudio-installer/*.so"
+%GO% "chmod 755 /tmp/%GITPRJ%/dist/etc/profile.d/xWSL.sh ; chmod 755 /tmp/%GITPRJ%/dist/usr/local/bin/restartwsl ; chmod 755 /tmp/%GITPRJ%/dist/usr/local/bin/initwsl ; chmod -R 700 /tmp/%GITPRJ%/dist/etc/skel/.config ; chmod -R 7700 /tmp/%GITPRJ%/dist/etc/skel/.local ; chmod 700 /tmp/%GITPRJ%/dist/etc/skel/.mozilla ; chmod +x /tmp/%GITPRJ%/dist/etc/skel/Desktop/Epiphany.desktop ; chmod +x /tmp/%GITPRJ%/dist/etc/skel/Desktop/Seamonkey.desktop"
 %GO% "rm /usr/lib/systemd/system/dbus-org.freedesktop.login1.service /usr/share/dbus-1/system-services/org.freedesktop.login1.service /usr/share/polkit-1/actions/org.freedesktop.login1.policy"
 %GO% "rm /usr/share/dbus-1/services/org.freedesktop.systemd1.service /usr/share/dbus-1/system-services/org.freedesktop.systemd1.service /usr/share/dbus-1/system.d/org.freedesktop.systemd1.conf /usr/share/polkit-1/actions/org.freedesktop.systemd1.policy /usr/share/applications/gksu.desktop"
-%GO% "cp -Rp /tmp/xWSL/dist/* / ; cp -Rp /tmp/xWSL/dist/etc/skel/.config /root ; cp -Rp /tmp/xWSL/dist/etc/skel/.local /root ; chown -R xrdp:root /etc/xrdp"
+%GO% "cp -Rp /tmp/%GITPRJ%/dist/* / ; cp -Rp /tmp/%GITPRJ%/dist/etc/skel/.config /root ; cp -Rp /tmp/%GITPRJ%/dist/etc/skel/.local /root ; chown -R xrdp:root /etc/xrdp"
 
 SET RUNEND=%date% @ %time:~0,5%
 CD %DISTROFULL% 
@@ -136,10 +135,10 @@ POWERSHELL -Command $prd = read-host "Enter password for %XU%" -AsSecureString ;
 %GO% "useradd -m -p nulltemp -s /bin/bash %XU%"
 %GO% "(echo '%XU%:%PWO%') | chpasswd"
 %GO% "echo '%XU% ALL=(ALL:ALL) ALL' >> /etc/sudoers"
-%GO% "sed -i 's/PLACEHOLDER/%XU%/g' /tmp/xWSL/xWSL.rdp"
-%GO% "sed -i 's/COMPY/%COMPUTERNAME%/g' /tmp/xWSL/xWSL.rdp"
-%GO% "sed -i 's/RDPPRT/%RDPPRT%/g' /tmp/xWSL/xWSL.rdp"
-%GO% "cp /tmp/xWSL/xWSL.rdp ./xWSL._"
+%GO% "sed -i 's/PLACEHOLDER/%XU%/g' /tmp/%GITPRJ%/xWSL.rdp"
+%GO% "sed -i 's/COMPY/%COMPUTERNAME%/g' /tmp/%GITPRJ%/xWSL.rdp"
+%GO% "sed -i 's/RDPPRT/%RDPPRT%/g' /tmp/%GITPRJ%/xWSL.rdp"
+%GO% "cp /tmp/%GITPRJ%/xWSL.rdp ./xWSL._"
 ECHO $prd = Get-Content .tmp > .tmp.ps1
 ECHO ($prd ^| ConvertTo-SecureString -AsPlainText -Force) ^| ConvertFrom-SecureString ^| Out-File .tmp  >> .tmp.ps1
 POWERSHELL -ExecutionPolicy Bypass -Command ./.tmp.ps1
