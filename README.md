@@ -5,7 +5,7 @@ Script to NetInstall **Ubuntu 20.04**, **xRDP**, and **XFCE 4.16** on WSL (Versi
 
 **INSTRUCTIONS:  From an elevated prompt, change to your desired install directory and type/paste the following command:**
 
-    PowerShell -executionpolicy bypass -command "wget https://github.com/ACMBDA/WSL-Desktop/raw/master/xWSL.cmd -UseBasicParsing -OutFile xWSL.cmd ; .\xWSL.cmd"
+     PowerShell -executionpolicy bypass -command "wget https://raw.githubusercontent.com/ACMBDA/WSL-Desktop/main/xWSL.CMD -UseBasicParsing -OutFile xWSL.cmd ; .\xWSL.cmd"
 
 You will be asked a few questions.  The installer script finds the current DPI scaling in Windows, you can set your own value if preferred:
 
